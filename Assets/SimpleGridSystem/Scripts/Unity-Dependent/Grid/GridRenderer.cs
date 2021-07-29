@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
+
 /// <summary>Render a grid in unity from a grid class, (turn on Gizmos).</summary>
 public class GridRenderer : MonoBehaviour
 {
@@ -12,7 +14,11 @@ public class GridRenderer : MonoBehaviour
     [Header("Render rules (May impact performance)")]
     [SerializeField] private bool renderCellsGizmos = true;           // Render cells when you have alot of cells will couse lag.
     [SerializeField] private bool renderCordinates = false;           // Render cordinates when you have alot of cells will couse lag.
-    [SerializeField] private bool renderOutlineGizmos = true;
+    [SerializeField] private bool renderOutline = true;
+
+    [SerializeField] private Color outlineColor = Color.gray;
+
+    private LineRenderer lineRenderer;
 
     private static GridRenderer singleton;
     private Grid grid;
@@ -23,6 +29,13 @@ public class GridRenderer : MonoBehaviour
             singleton = this;
         else
             Destroy(this);
+
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        lineRenderer.receiveShadows = false;
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.startColor = outlineColor;
+        lineRenderer.endColor = outlineColor;
 
         Grid grid = new Grid(width, height, cellSize);
         GetSingleton().RenderGrid(grid);
@@ -43,8 +56,6 @@ public class GridRenderer : MonoBehaviour
     /// <summary>Method to render the grid, re renders grid if called again.</summary>
     public void RenderGrid(Grid grid)
     {
-        if (renderCellsGizmos)
-            renderOutlineGizmos = true;
         ClearVisualGrid();
         this.grid = grid;
         StartCoroutine(StartRenderGrid());
@@ -69,15 +80,20 @@ public class GridRenderer : MonoBehaviour
             }
         }
 
-        if (renderOutlineGizmos)
+        if (renderCellsGizmos)
         {
-            if (!renderCellsGizmos)
-            {
-                Debug.DrawLine(CellToWorldSpace(0, 0), CellToWorldSpace(0, grid.GetGridArray().GetLength(1)), Color.white, 1 / 0f);
-                Debug.DrawLine(CellToWorldSpace(0, 0), CellToWorldSpace(grid.GetGridArray().GetLength(0), 0), Color.white, 1 / 0f);
-            }
             Debug.DrawLine(CellToWorldSpace(0, grid.GetGridArray().GetLength(1)), CellToWorldSpace(grid.GetGridArray().GetLength(0), grid.GetGridArray().GetLength(1)), Color.white, 1 / 0f);
             Debug.DrawLine(CellToWorldSpace(grid.GetGridArray().GetLength(0), 0), CellToWorldSpace(grid.GetGridArray().GetLength(0), grid.GetGridArray().GetLength(1)), Color.white, 1 / 0f);
+        }
+
+        if (renderOutline)
+        {
+            lineRenderer.positionCount = 5;
+            lineRenderer.SetPosition(0, Vector3.zero);
+            lineRenderer.SetPosition(1, CellToWorldSpace(0, grid.GetGridArray().GetLength(1)));
+            lineRenderer.SetPosition(2, CellToWorldSpace(grid.GetGridArray().GetLength(0), grid.GetGridArray().GetLength(1)));
+            lineRenderer.SetPosition(3, CellToWorldSpace(grid.GetGridArray().GetLength(0), 0));
+            lineRenderer.SetPosition(4, new Vector3((lineRenderer.startWidth / 2) * -1, 0, 0));
         }
     }
 
