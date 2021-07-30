@@ -14,13 +14,13 @@ public class GridRenderer : MonoBehaviour
     [Header("Render rules (May impact performance)")]
     [SerializeField] private bool renderCellsGizmos = true;           // Render cells when you have alot of cells will couse lag.
     [SerializeField] private bool renderCordinates = false;           // Render cordinates when you have alot of cells will couse lag.
-    [SerializeField] private bool renderOutline = true;
 
+    [Header("Grid outline properties)")]
+    [SerializeField] private bool renderOutline = true;
     [SerializeField] private Color outlineColor = Color.gray;
 
-    private LineRenderer lineRenderer;
-
     private static GridRenderer singleton;
+    private LineRenderer lineRenderer;
     private Grid grid;
 
     private void Awake()

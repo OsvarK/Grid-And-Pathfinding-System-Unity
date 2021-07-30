@@ -179,6 +179,14 @@ PrefabInstance:
       value: GridRenderer
       objectReference: {fileID: 0}
     - target: {fileID: 6385518690894247015, guid: 87553ac2e4b06254eb9863c900641019, type: 3}
+      propertyPath: width
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385518690894247015, guid: 87553ac2e4b06254eb9863c900641019, type: 3}
+      propertyPath: height
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6385518690894247015, guid: 87553ac2e4b06254eb9863c900641019, type: 3}
       propertyPath: outlineColor.a
       value: 1
       objectReference: {fileID: 0}
