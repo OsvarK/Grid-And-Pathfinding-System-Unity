@@ -11,6 +11,11 @@ public class PathfindingGUI : MonoBehaviour
 
     public Tools CurrentTool { get; private set; }
 
+    private void Start()
+    {
+        SetWallTool();
+    }
+
     public enum Tools {
         wall,
         start,

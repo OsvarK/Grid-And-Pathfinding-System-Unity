@@ -1,1 +1,0 @@
-﻿TO REMOVE ALL THE EXAMPELS FROM THIS PROJECT, REMOVE THE EXAMPEL CODE IN 'GridInteraction.cs' class and delete this folder (EXAMPELS)!

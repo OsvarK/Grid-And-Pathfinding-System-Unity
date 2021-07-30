@@ -1,5 +1,5 @@
 /// <summary>Data and logic for defining an cell interaction.</summary>
-public interface ICellDataInteraction
+public interface ICellInteractionData
 {
 
 }

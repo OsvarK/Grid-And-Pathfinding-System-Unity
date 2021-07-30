@@ -3,5 +3,5 @@ public interface ICellData
 {
     /// <summary>Method is called when the cell was interacted with.</summary>
     /// <param name="interactionData">Contains data and logic about this interaction.</param>
-    public void OnInteraction(ICellDataInteraction interactionData);
+    public void OnInteraction(ICellInteractionData interactionData);
 }

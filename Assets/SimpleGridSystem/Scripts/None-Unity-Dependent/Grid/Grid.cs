@@ -71,12 +71,12 @@ public class Grid
     /// Interact with and cell, calls OnInteraction in the cell.
     /// </summary>
     /// <param name="interactionData">Contains data and logic about this interaction.</param>
-    public void InteractWithCell(int x, int y, ICellDataInteraction interactionData)
+    public void InteractWithCell(int x, int y, ICellInteractionData interactionData = null)
     {
         Cell cell = GetCellFromGridCordinates(x, y);
         cell.CellData.OnInteraction(interactionData);
     }
-    public void InteractWithCell(Cell cell, ICellDataInteraction interactionData)
+    public void InteractWithCell(Cell cell, ICellInteractionData interactionData = null)
     {
         cell.CellData.OnInteraction(interactionData);
     }
