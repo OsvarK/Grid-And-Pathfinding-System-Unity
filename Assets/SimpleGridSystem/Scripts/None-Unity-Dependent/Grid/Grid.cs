@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 /// <summary>Representation of a grid in a 2D world.</summary>
 public class Grid
@@ -65,21 +66,42 @@ public class Grid
     /// <summary>Retrives the cell from cordinates x and y.</summary>
     public Cell GetCellFromGridCordinates(int x, int y)
     {
-        return gridArray[x, y];
+        try
+        {
+            return gridArray[x, y];
+        }
+        catch (IndexOutOfRangeException)
+        {
+            return null;
+        }
     }
-    /// <summary>
-    /// Interact with and cell, calls OnInteraction in the cell.
-    /// </summary>
-    /// <param name="interactionData">Contains data and logic about this interaction.</param>
-    public void InteractWithCell(int x, int y, ICellInteractionData interactionData = null)
+
+    /// <summary>Returns all the cells around the given cell.</summary>
+    public List<Cell> GetNeighberingCells(Cell cell)
     {
-        Cell cell = GetCellFromGridCordinates(x, y);
-        cell.CellData.OnInteraction(interactionData);
+        List<Cell> neighbors = new List<Cell>();
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0)
+                {
+                    continue;
+                }
+
+                int validX = cell.x + x;
+                int validY = cell.y + y;
+
+                if (validX >= 0 && validX < width && validY >= 0 && validY < height)
+                {
+                    neighbors.Add(gridArray[validX, validY]);
+                }
+            }
+        }
+
+        return neighbors;
     }
-    public void InteractWithCell(Cell cell, ICellInteractionData interactionData = null)
-    {
-        cell.CellData.OnInteraction(interactionData);
-    }
+
     /// <summary>Returns cordinate x and y in a string format (x, y).</summary>
     public static string GridCordinatesAsString(int x, int y)
     {

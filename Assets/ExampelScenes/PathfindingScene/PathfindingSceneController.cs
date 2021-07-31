@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 /// <summary>Controlls the logic of the PathfindingScene, rendering cells for pathfinding visualization.</summary>
 public class PathfindingSceneController : MonoBehaviour
@@ -11,17 +12,28 @@ public class PathfindingSceneController : MonoBehaviour
     [SerializeField] Color wallColor = Color.black;
     [SerializeField] Color starColor = Color.green;
     [SerializeField] Color endColor = Color.red;
+    [SerializeField] Color finalPathColor = Color.blue;
 
     private List<VisualCell> visualCells = new List<VisualCell>();
     private VisualCell startCell;
     private VisualCell endCell;
+    private AStarAlgorithm aStar;
 
-    // Update is called once per frame
+    private void Start()
+    {
+        Grid grid = GridRenderer.GetSingleton().GetGrid();
+        aStar = new AStarAlgorithm(grid);
+    }
+
+
+    private bool mouseBtnDown;
     void Update()
     {
+        if (Input.GetMouseButtonUp(1)) { mouseBtnDown = false; }
         // Interaction with cell
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) || mouseBtnDown)
         {
+            mouseBtnDown = true;
             if (Input.GetKey(KeyCode.LeftControl))
             {
                 // REMOVE CELL
@@ -32,6 +44,8 @@ public class PathfindingSceneController : MonoBehaviour
                 {
                     if (cell == visualCell.Cell)
                     {
+                        AStarCell aStarCell = (AStarCell)cell.GetCellComponent(AStarCell.COMPONENT_KEY);
+                        aStarCell.Walkable = true;
                         Destroy(visualCell.CellPrefab);
                         visualCellIndexToRemove = index;
                     }
@@ -59,6 +73,8 @@ public class PathfindingSceneController : MonoBehaviour
                 switch (tool)
                 {
                     case PathfindingGUI.Tools.wall:
+                        AStarCell aStarCell = (AStarCell)cell.GetCellComponent(AStarCell.COMPONENT_KEY);
+                        aStarCell.Walkable = false;
                         visualCells.Add(SpawnVisualCellAtCell(cell, wallColor));
                         break;
                     case PathfindingGUI.Tools.start:
@@ -78,6 +94,39 @@ public class PathfindingSceneController : MonoBehaviour
                     default:
                         break;
                 }
+            }
+        }
+    }
+
+
+    private List<VisualCell> visualPath = new List<VisualCell>();
+    public void CalculatePath()
+    {
+        foreach (VisualCell cell in visualPath)
+        {
+            Destroy(cell.CellPrefab);
+        }
+        visualPath.Clear();
+
+
+        if (startCell == null || endCell == null)
+        {
+            Debug.Log("Reqiures a start and a end cell.");
+            return;
+        }
+
+        List<Cell> path = aStar.GetPath(startCell.Cell, endCell.Cell);
+
+        StartCoroutine(StartRenderPath());
+        IEnumerator StartRenderPath()
+        {
+            int i = 0;
+            foreach (Cell cell in path)
+            {
+                yield return 0;
+                if (i + 1 == path.Count) { continue; }
+                visualPath.Add(SpawnVisualCellAtCell(cell, finalPathColor));
+                i++;
             }
         }
     }

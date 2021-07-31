@@ -1,5 +1,5 @@
 /// <summary>This is just an exampel, fell free to remove this class.</summary>
-public class ExampleCell : ICellData
+public class ExampleCell : ICellDataComponent
 {
     public void OnInteraction(ICellInteractionData interactionData)
     {

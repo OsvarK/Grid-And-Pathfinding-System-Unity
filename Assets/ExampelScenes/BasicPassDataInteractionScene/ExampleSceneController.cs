@@ -11,7 +11,8 @@ public class ExampleSceneController : MonoBehaviour
         {
             for (int y = 0; y < grid.height; y++)
             {
-                cells[x, y].CellData = new ExampleCell();
+
+                cells[x, y].AddCellComponent("interaction", new ExampleCell());
             }
         }
     }

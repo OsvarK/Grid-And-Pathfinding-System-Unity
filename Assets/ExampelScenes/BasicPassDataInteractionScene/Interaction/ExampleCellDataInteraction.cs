@@ -6,14 +6,16 @@ public class ExampleCellDataInteraction : ICellInteractionData
     public static void ExampleInteractionCode()
     {
         Cell cell = GridRenderer.GetCellFromMousePosition();
-        Grid grid = GridRenderer.GetSingleton().GetGrid();
 
-        // Defines the interaction.
-        ExampleCellDataInteraction cellInteraction = new ExampleCellDataInteraction
+        if (cell == null)
+            return;
+
+        // Defines the interaction and its data.
+        ExampleCellDataInteraction cellInteractionData = new ExampleCellDataInteraction
         {
             Msg = "Example interaction on cell (" + cell.x + "," + cell.y + ")"
         };
-        // Call the interaction.
-        grid.InteractWithCell(cell, cellInteraction);
+        // Call the interaction from the component.
+        cell.InteractWithCellComponent("interaction", cellInteractionData);
     }
 }
