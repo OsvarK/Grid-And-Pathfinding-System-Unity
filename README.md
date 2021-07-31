@@ -4,6 +4,7 @@ Instead of having to remake a grid system every time I want to visualize or prot
 ![grid-showcase-gif](./ReadmeResources/grid-showcase.gif)
 
 ## Pathfinding
+Pathfinding using [A*](https://en.wikipedia.org/wiki/A*_search_algorithm) 
 ![grid-showcase-gif](./ReadmeResources/pathfinding-showcase.gif)
 
 ### Disclaimer
