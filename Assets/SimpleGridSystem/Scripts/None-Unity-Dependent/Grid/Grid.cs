@@ -76,32 +76,6 @@ public class Grid
         }
     }
 
-    /// <summary>Returns all the cells around the given cell.</summary>
-    public List<Cell> GetNeighberingCells(Cell cell)
-    {
-        List<Cell> neighbors = new List<Cell>();
-        for (int x = -1; x <= 1; x++)
-        {
-            for (int y = -1; y <= 1; y++)
-            {
-                if (x == 0 && y == 0)
-                {
-                    continue;
-                }
-
-                int validX = cell.x + x;
-                int validY = cell.y + y;
-
-                if (validX >= 0 && validX < width && validY >= 0 && validY < height)
-                {
-                    neighbors.Add(gridArray[validX, validY]);
-                }
-            }
-        }
-
-        return neighbors;
-    }
-
     /// <summary>Returns cordinate x and y in a string format (x, y).</summary>
     public static string GridCordinatesAsString(int x, int y)
     {

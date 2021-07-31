@@ -19,6 +19,8 @@ public class PathfindingSceneController : MonoBehaviour
     private VisualCell endCell;
     private AStarAlgorithm aStar;
 
+    private bool diagonalMovement;
+
     private void Start()
     {
         Grid grid = GridRenderer.GetSingleton().GetGrid();
@@ -98,6 +100,11 @@ public class PathfindingSceneController : MonoBehaviour
         }
     }
 
+    public void ToggleDiagonalMovement()
+    {
+        diagonalMovement = !diagonalMovement;
+    }
+
 
     private List<VisualCell> visualPath = new List<VisualCell>();
     public void CalculatePath()
@@ -115,7 +122,13 @@ public class PathfindingSceneController : MonoBehaviour
             return;
         }
 
-        List<Cell> path = aStar.GetPath(startCell.Cell, endCell.Cell);
+        List<Cell> path = aStar.GetPath(startCell.Cell, endCell.Cell, !diagonalMovement);
+
+        if (path == null)
+        {
+            Debug.Log("No path found");
+            return;
+        }
 
         StartCoroutine(StartRenderPath());
         IEnumerator StartRenderPath()
@@ -129,6 +142,24 @@ public class PathfindingSceneController : MonoBehaviour
                 i++;
             }
         }
+    }
+
+    public void ClearGrid()
+    {
+        foreach (VisualCell visualCell in visualCells)
+        {  
+            AStarCell aStarCell = (AStarCell)visualCell.Cell.GetCellComponent(AStarCell.COMPONENT_KEY);
+            aStarCell.Walkable = true;
+            Destroy(visualCell.CellPrefab);
+        }
+
+        foreach (VisualCell visualCell in visualPath)
+        {
+            Destroy(visualCell.CellPrefab);
+        }
+
+        visualCells.Clear();
+        visualPath.Clear();
     }
 
     private VisualCell SpawnVisualCellAtCell(Cell cell, Color color)

@@ -23,8 +23,9 @@ public class AStarAlgorithm
     /// <summary>Getting the path between two cells using a* search Algorithm.</summary>
     /// <param name="startCell">Where the search starts</param>
     /// <param name="endCell">Where the search ends</param>
+    /// <param name="allowDiagonalPassBetweenNoneWalkable">Determines if the A* will search diagonaly, when there is two none walkable blocking each side.</param>
     /// <returns>List of cells, sorted in correct order</returns>
-    public List<Cell> GetPath(Cell startCell, Cell endCell)
+    public List<Cell> GetPath(Cell startCell, Cell endCell, bool disabelDiagonalPass = true)
     {
         List<Cell> openSet = new List<Cell>();
         HashSet<Cell> closedSet = new HashSet<Cell>();
@@ -67,7 +68,7 @@ public class AStarAlgorithm
                 return path;
             }
 
-            foreach (Cell neighberingCell in grid.GetNeighberingCells(currentCell))
+            foreach (Cell neighberingCell in GetNeighberingCells(currentCell, disabelDiagonalPass))
             {
                 AStarCell neighberCellData = (AStarCell)neighberingCell.GetCellComponent(AStarCell.COMPONENT_KEY);
 
@@ -89,6 +90,69 @@ public class AStarAlgorithm
         }
 
         return null;
+    }
+
+    /// <summary>Returns all the cells around the given cell.</summary>
+    /// <param name="disabelDiagonalPass">Enables or disables diagonal searching between none walkables</param>
+    private List<Cell> GetNeighberingCells(Cell cell, bool disabelDiagonalPass = true)
+    {
+        List<Cell> neighbors = new List<Cell>();
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0)
+                {
+                    continue;
+                }
+
+                int validX = cell.x + x;
+                int validY = cell.y + y;
+
+                if (validX >= 0 && validX < grid.width && validY >= 0 && validY < grid.height)
+                {
+                    if (disabelDiagonalPass && Math.Abs(x) == 1 && Math.Abs(y) == 1)
+                    {
+                        // North East
+                        if (x == 1 && y == 1)
+                        {
+                            AStarCell north = (AStarCell)grid.GetCellFromGridCordinates(cell.x, cell.y + 1).GetCellComponent(AStarCell.COMPONENT_KEY);
+                            AStarCell east = (AStarCell)grid.GetCellFromGridCordinates(cell.x + 1, cell.y).GetCellComponent(AStarCell.COMPONENT_KEY);
+
+                            if (!north.Walkable && !east.Walkable) { continue; }
+                        }
+                        // North West
+                        else if (x == -1 && y == 1)
+                        {
+                            AStarCell north = (AStarCell)grid.GetCellFromGridCordinates(cell.x, cell.y + 1).GetCellComponent(AStarCell.COMPONENT_KEY);
+                            AStarCell west = (AStarCell)grid.GetCellFromGridCordinates(cell.x - 1, cell.y).GetCellComponent(AStarCell.COMPONENT_KEY);
+
+                            if (!north.Walkable && !west.Walkable) { continue; }
+                        }
+                        // South East
+                        else if (x == 1 && y == -1)
+                        {
+                            AStarCell south = (AStarCell)grid.GetCellFromGridCordinates(cell.x, cell.y - 1).GetCellComponent(AStarCell.COMPONENT_KEY);
+                            AStarCell east = (AStarCell)grid.GetCellFromGridCordinates(cell.x + 1, cell.y).GetCellComponent(AStarCell.COMPONENT_KEY);
+
+                            if (!south.Walkable && !east.Walkable) { continue; }
+                        }
+                        // South West
+                        else if (x == -1 && y == -1)
+                        {
+                            AStarCell south = (AStarCell)grid.GetCellFromGridCordinates(cell.x, cell.y - 1).GetCellComponent(AStarCell.COMPONENT_KEY);
+                            AStarCell east = (AStarCell)grid.GetCellFromGridCordinates(cell.x - 1, cell.y).GetCellComponent(AStarCell.COMPONENT_KEY);
+
+                            if (!south.Walkable && !east.Walkable) { continue; }
+                        }
+                    }
+
+                    neighbors.Add(grid.GetCellFromGridCordinates(validX, validY));
+                }
+            }
+        }
+
+        return neighbors;
     }
 
     /// <summary> Retrives the distance between cells. </summary>
