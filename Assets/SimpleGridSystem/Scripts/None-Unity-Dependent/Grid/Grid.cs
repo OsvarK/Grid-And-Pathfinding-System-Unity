@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 /// <summary>Representation of a grid in a 2D world.</summary>
 public class Grid
@@ -65,21 +66,16 @@ public class Grid
     /// <summary>Retrives the cell from cordinates x and y.</summary>
     public Cell GetCellFromGridCordinates(int x, int y)
     {
-        return gridArray[x, y];
+        try
+        {
+            return gridArray[x, y];
+        }
+        catch (IndexOutOfRangeException)
+        {
+            return null;
+        }
     }
-    /// <summary>
-    /// Interact with and cell, calls OnInteraction in the cell.
-    /// </summary>
-    /// <param name="interactionData">Contains data and logic about this interaction.</param>
-    public void InteractWithCell(int x, int y, ICellDataInteraction interactionData)
-    {
-        Cell cell = GetCellFromGridCordinates(x, y);
-        cell.CellData.OnInteraction(interactionData);
-    }
-    public void InteractWithCell(Cell cell, ICellDataInteraction interactionData)
-    {
-        cell.CellData.OnInteraction(interactionData);
-    }
+
     /// <summary>Returns cordinate x and y in a string format (x, y).</summary>
     public static string GridCordinatesAsString(int x, int y)
     {

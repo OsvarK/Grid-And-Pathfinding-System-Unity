@@ -14,13 +14,13 @@ public class GridRenderer : MonoBehaviour
     [Header("Render rules (May impact performance)")]
     [SerializeField] private bool renderCellsGizmos = true;           // Render cells when you have alot of cells will couse lag.
     [SerializeField] private bool renderCordinates = false;           // Render cordinates when you have alot of cells will couse lag.
-    [SerializeField] private bool renderOutline = true;
 
+    [Header("Grid outline properties)")]
+    [SerializeField] private bool renderOutline = true;
     [SerializeField] private Color outlineColor = Color.gray;
 
-    private LineRenderer lineRenderer;
-
     private static GridRenderer singleton;
+    private LineRenderer lineRenderer;
     private Grid grid;
 
     private void Awake()
@@ -119,5 +119,14 @@ public class GridRenderer : MonoBehaviour
         grid = null;
         foreach (Transform child in gameObject.transform)
             Destroy(child.gameObject);
+    }
+
+    /// <summary>Retrives the cell that is under the mouse.</summary>
+    public static Cell GetCellFromMousePosition()
+    {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Grid grid = GetSingleton().GetGrid();
+        Tuple<int, int> cellCords = grid.WorldSpaceToGridCordinates(worldPosition.x, worldPosition.y);
+        return grid.GetCellFromGridCordinates(cellCords.Item1, cellCords.Item2);
     }
 }
