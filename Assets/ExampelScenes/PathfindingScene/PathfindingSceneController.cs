@@ -122,7 +122,7 @@ public class PathfindingSceneController : MonoBehaviour
             return;
         }
 
-        List<Cell> path = aStar.GetPath(startCell.Cell, endCell.Cell, !diagonalMovement);
+        List<Cell> path = aStar.GetPath(AStarCell.GetComponentFrom(startCell.Cell), AStarCell.GetComponentFrom(endCell.Cell), !diagonalMovement);
 
         if (path == null)
         {
